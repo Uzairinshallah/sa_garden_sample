@@ -10,8 +10,8 @@ import '../my_properties/my_properties.dart';
 
 class Homepage extends StatelessWidget {
   Homepage({super.key});
-  final GlobalKey<ScaffoldState> _key = GlobalKey();
 
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
 
   List<IconData> iconList = [
     Icons.file_copy,
@@ -20,13 +20,15 @@ class Homepage extends StatelessWidget {
     Icons.home_outlined,
     Icons.shopping_bag_outlined,
   ];
+  DashboardProvider? dashboardPro;
 
   @override
   Widget build(BuildContext context) {
-    DashboardProvider dashboardPro = Provider.of<DashboardProvider>(context);
-    dashboardPro.getPropertyDetails(dashboardPro, context);
+    dashboardPro ??= Provider.of<DashboardProvider>(context)
+      ..getPropertyDetails(context);
 
-    UnitDetailsProvider unitDetailsPro = Provider.of<UnitDetailsProvider>(context);
+    UnitDetailsProvider unitDetailsPro =
+        Provider.of<UnitDetailsProvider>(context);
     GetUnitProvider getUnitPro = Provider.of<GetUnitProvider>(context);
     return Scaffold(
         key: _key,
@@ -119,22 +121,29 @@ class Homepage extends StatelessWidget {
                   ),
                 ],
               ),
-              (dashboardPro.countLoading == true) ? const Center(child: CircularProgressIndicator(color: Colors.red, )) : GridView.builder(
-                shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                physics: const ScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 15,
-                  crossAxisSpacing: 15,
-                  childAspectRatio: 1, // Adjust as needed
-                ),
-                itemCount: dashboardPro.propertyCount.length,
-                itemBuilder: (context, index) {
-                  var pCount = dashboardPro.propertyCount[index];
-                  return getBox(pCount.type, iconList[index], pCount.total, context);
-                },
-              ),
+              (dashboardPro!.countLoading == true)
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                      color: Colors.red,
+                    ))
+                  : GridView.builder(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      physics: const ScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 15,
+                        crossAxisSpacing: 15,
+                        childAspectRatio: 1, // Adjust as needed
+                      ),
+                      itemCount: dashboardPro!.propertyCount.length,
+                      itemBuilder: (context, index) {
+                        var pCount = dashboardPro!.propertyCount[index];
+                        return getBox(pCount.type, iconList[index],
+                            pCount.total, context);
+                      },
+                    ),
               const SizedBox(
                 height: 15,
               ),
@@ -171,10 +180,14 @@ class Homepage extends StatelessWidget {
                   ),
                   Column(
                     children: [
-                      getButton("Details", Colors.red, (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const MyProperties(),));
+                      getButton("Details", Colors.red, () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MyProperties(),
+                            ));
                       }),
-                      getButton("Pay Installment", Colors.blue, (){}),
+                      getButton("Pay Installment", Colors.blue, () {}),
                     ],
                   )
                 ],
@@ -271,6 +284,4 @@ class Homepage extends StatelessWidget {
       ),
     );
   }
-
-
 }

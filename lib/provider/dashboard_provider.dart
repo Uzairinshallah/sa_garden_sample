@@ -8,14 +8,14 @@ import '../repositories/api_services.dart';
 import '../views/auth_screens/login_screen.dart';
 
 class DashboardProvider extends ChangeNotifier{
-  DashboardProvider();
+  DashboardProvider(){}
   ApiService apiService = ApiService();
   bool countLoading = true;
 
   List<PropertyCount> propertyCount = [];
 
 
-  Future<void> getPropertyDetails(DashboardProvider dashboardPro, BuildContext context) async {
+  Future<void> getPropertyDetails(BuildContext context) async {
     var url = "PropertyCount1";
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
