@@ -8,9 +8,14 @@ import '../../provider/get_unit_provider.dart';
 import '../../res/functions/constant.dart';
 import '../my_properties/my_properties.dart';
 
-class Homepage extends StatelessWidget {
+class Homepage extends StatefulWidget {
   Homepage({super.key});
 
+  @override
+  State<Homepage> createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
 
   List<IconData> iconList = [
@@ -20,16 +25,26 @@ class Homepage extends StatelessWidget {
     Icons.home_outlined,
     Icons.shopping_bag_outlined,
   ];
+
   DashboardProvider? dashboardPro;
+  GetUnitProvider? getUnitPro;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+  bool isLoad = false;
 
   @override
   Widget build(BuildContext context) {
-    dashboardPro ??= Provider.of<DashboardProvider>(context)
-      ..getPropertyDetails(context);
-
-    UnitDetailsProvider unitDetailsPro =
-        Provider.of<UnitDetailsProvider>(context);
-    GetUnitProvider getUnitPro = Provider.of<GetUnitProvider>(context);
+    if(isLoad == false){
+      getUnitPro = Provider.of<GetUnitProvider>(context,)
+        ..getUnits(context);
+      dashboardPro ??= Provider.of<DashboardProvider>(context,)
+        ..getPropertyDetails(context);
+      isLoad = true;
+    }
     return Scaffold(
         key: _key,
         drawer: const GetDrawer(),
@@ -147,67 +162,91 @@ class Homepage extends StatelessWidget {
               const SizedBox(
                 height: 15,
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    getBox2("Name", Icons.drive_file_rename_outline, context),
-                    getBox2("Mobile", Icons.mobile_friendly, context),
-                    getBox2("Plots", Icons.home_outlined, context),
-                    getBox2("Types", Icons.type_specimen, context),
-                    getBox2("Status", Icons.ev_station_rounded, context),
-                    getBox2("Actions", Icons.call_to_action_outlined, context),
-                  ],
-                ),
-              ),
               const SizedBox(
                 height: 35,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const Text(
-                    "1000",
-                    style: TextStyle(color: Colors.black, fontSize: 14),
-                  ),
-                  const Text(
-                    "Commercial ",
-                    style: TextStyle(color: Colors.black, fontSize: 14),
-                  ),
-                  const Text(
-                    "Registered",
-                    style: TextStyle(color: Colors.black, fontSize: 14),
-                  ),
-                  Column(
-                    children: [
-                      getButton("Details", Colors.red, () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const MyProperties(),
-                            ));
-                      }),
-                      getButton("Pay Installment", Colors.blue, () {}),
-                    ],
-                  )
-                ],
-              )
+              (getUnitPro!.getUnitsList.isNotEmpty) ? SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  columns: <DataColumn>[
+                    DataColumn(
+                      label: getBox2(
+                          "Name", Icons.drive_file_rename_outline, context),
+                    ),
+                    DataColumn(
+                      label: getBox2("Mobile", Icons.mobile_friendly, context),
+                    ),
+                    DataColumn(
+                      label: getBox2("CNIC", Icons.mobile_friendly, context),
+                    ),
+                    DataColumn(
+                      label: getBox2("Plots", Icons.home_outlined, context),
+                    ),
+                    DataColumn(
+                      label: getBox2("Types", Icons.type_specimen, context),
+                    ),
+                    DataColumn(
+                      label:
+                          getBox2("Status", Icons.ev_station_rounded, context),
+                    ),
+                    DataColumn(
+                      label: getBox2(
+                          "Actions", Icons.call_to_action_outlined, context),
+                    ),
+                  ],
+                  rows: <DataRow>[
+                    DataRow(cells: <DataCell>[
+                      for (var key in getUnitPro!.getUnitsList) ...[
+                        DataCell(Text(key.name.toString())),
+                        DataCell(Text(key.mobile1.toString())),
+                        DataCell(Text(key.cNICNICOP.toString())),
+                        DataCell(Text(key.plotSize.toString())),
+                        DataCell(Text(key.type.toString())),
+                        DataCell(Text(key.status.toString())),
+                        DataCell(
+                          SizedBox(
+                            height: 100,
+                            child: Column(
+                              children: [
+                                getButton("Details", Colors.red, () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            MyProperties(id: key.unitId.toString(), module: key.module!),
+                                      ));
+                                }),
+                                getSpace(h: 5),
+                                getButton(
+                                    "Pay Installment", Colors.blue, () {}),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ]
+                    ])
+                  ],
+                ),
+              ) : SizedBox(),
             ],
           ),
         ));
   }
 
-  ElevatedButton getButton(String txt, Color col, Function() onTap) {
-    return ElevatedButton(
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(col),
-      ),
-      onPressed: () {
-        onTap();
-      },
-      child: Text(
-        txt,
-        style: const TextStyle(color: Colors.white),
+  Widget getButton(String txt, Color col, Function() onTap) {
+    return SizedBox(
+      height: 20,
+      child: ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(col),
+        ),
+        onPressed: () {
+          onTap();
+        },
+        child: Text(
+          txt,
+          style: const TextStyle(color: Colors.white),
+        ),
       ),
     );
   }
@@ -252,36 +291,28 @@ class Homepage extends StatelessWidget {
     );
   }
 
-  Container getBox2(String txt, IconData icon, BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.black12, width: 1),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Icon(
-                icon,
-                size: 30,
-              ),
-              getSpace(w: 8),
-              Text(
-                txt,
-                style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w500),
-              ),
-            ],
-          ),
-        ],
-      ),
+  Widget getBox2(String txt, IconData icon, BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Icon(
+              icon,
+              size: 30,
+            ),
+            getSpace(w: 8),
+            Text(
+              txt,
+              style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

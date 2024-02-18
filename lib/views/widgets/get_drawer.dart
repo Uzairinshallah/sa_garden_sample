@@ -3,6 +3,7 @@ import 'package:sa_garden_sample/views/auth_screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../res/functions/constant.dart';
+import '../my_properties/my_properties.dart';
 import '../profile/profile_screen.dart';
 
 class GetDrawer extends StatelessWidget {
@@ -36,7 +37,9 @@ class GetDrawer extends StatelessWidget {
           getHeading(
             "My Properties",
             Icons.home_outlined,
-            () {},
+            () {
+              // Navigator.push(context, MaterialPageRoute(builder: (context) => const MyProperties(),),);
+            },
           ),
           getHeading(
             "Electricity bills",

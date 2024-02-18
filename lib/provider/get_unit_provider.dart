@@ -8,29 +8,33 @@ import '../repositories/api_services.dart';
 
 class GetUnitProvider extends ChangeNotifier {
   GetUnitProvider() {
-    getUnits();
+    // getUnits();
   }
   ApiService apiService = ApiService();
   bool countLoading = true;
 
   List<GetUnits> getUnitsList = [];
 
-  Future<void> getUnits() async {
+  Future<void> getUnits(BuildContext context) async {
     var url = "GetUnits1";
-    // try {
+    try {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString(
           'token',
         ) ??
         "";
+    String cnic = prefs.getString('cnic',) ?? "";
+    String phone = prefs.getString('phone',) ?? "";
+
     Map body = {
-      "Phone": "03236544160",
-      "CNIC": "12345-1234567-5",
+      "Phone": phone,
+      "CNIC": cnic,
       "Token": token,
     };
-    debugPrint("responseBody 222");
+    debugPrint("responseBody uzzz");
+    print(body);
 
-    var response = await apiService.post(url: url, body: body);
+    var response = await apiService.post(url: url, body: body, context: context);
     var responseBody = jsonDecode(response!.body);
     List items = responseBody ?? [];
     debugPrint("responseBody 444");
@@ -41,9 +45,9 @@ class GetUnitProvider extends ChangeNotifier {
         items[index],
       ),
     );
-    // } catch (e) {
-    //   debugPrint("error: ${e.toString()}");
-    // }
+    } catch (e) {
+      debugPrint("error: ${e.toString()}");
+    }
     countLoading = false;
     notifyListeners();
   }

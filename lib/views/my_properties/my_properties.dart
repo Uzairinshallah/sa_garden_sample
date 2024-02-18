@@ -8,7 +8,10 @@ import 'package:sa_garden_sample/views/widgets/custom_widgets/rounded_container.
 import '../../provider/unit_details_provider.dart';
 
 class MyProperties extends StatefulWidget {
-  const MyProperties({super.key});
+  const MyProperties({super.key, required this.id, required this.module,});
+
+  final String id;
+  final String module;
 
   @override
   State<MyProperties> createState() => _MyPropertiesState();
@@ -18,11 +21,13 @@ class _MyPropertiesState extends State<MyProperties> {
   late UnitDetailsProvider getUnitPro;
 
   UnitDetails? unitDetails;
+  bool isPayment = true;
 
   @override
   void initState() {
     // TODO: implement initState
-    Provider.of<UnitDetailsProvider>(context, listen: false).getUnitDetails();
+    Provider.of<UnitDetailsProvider>(context, listen: false)
+        .getUnitDetails(context, widget.id, widget.module);
     super.initState();
   }
 
@@ -79,26 +84,26 @@ class _MyPropertiesState extends State<MyProperties> {
                               const Divider(),
                               getSpace(h: 10),
                               getText("Name: ",
-                                  "${unitDetails?.owners.name ?? ""}"),
+                                  unitDetails?.owners?.name ?? ""),
                               getText("Father/Husband Name: ",
-                                  "${unitDetails?.owners.fatherHusband ?? ""}"),
+                                  unitDetails?.owners?.fatherHusband ?? ""),
                               getText("Phone 1: ",
-                                  "${unitDetails?.owners.mobile1 ?? ""}"),
+                                  unitDetails?.owners?.mobile1 ?? ""),
                               getText("Phone 2: ",
-                                  "${unitDetails?.owners.mobile2 ?? ""}"),
+                                  unitDetails?.owners?.mobile2 ?? ""),
                               getText("CNIC: ",
-                                  unitDetails?.owners.cnicNicop ?? ""),
+                                  unitDetails?.owners?.cnicNicop ?? ""),
                               getText("Date of Birth: ",
-                                  unitDetails?.owners.dateOfBirth ?? ""),
+                                  unitDetails?.owners?.dateOfBirth ?? ""),
                               getText("Occupation: ",
-                                  unitDetails?.owners.occupation ?? ""),
-                              getText("City: ", unitDetails?.owners.city ?? ""),
+                                  unitDetails?.owners?.occupation ?? ""),
+                              getText("City: ", unitDetails?.owners?.city ?? ""),
                               getText("Residential Address: ",
-                                  unitDetails?.owners.residentialAddress ?? ""),
+                                  unitDetails?.owners?.residentialAddress ?? ""),
                               getText("Postal Address: ",
-                                  unitDetails?.owners.postalAddress ?? ""),
+                                  unitDetails?.owners?.postalAddress ?? ""),
                               getText("Ownership Status: ",
-                                  unitDetails?.owners.ownershipStatus ?? ""),
+                                  unitDetails?.owners?.ownershipStatus ?? ""),
                               const Divider(),
                               const Align(
                                   alignment: Alignment.center,
@@ -108,13 +113,13 @@ class _MyPropertiesState extends State<MyProperties> {
                                   )),
                               const Divider(),
                               getText("Nominee Name: ",
-                                  unitDetails?.owners.nomineeName ?? ""),
+                                  unitDetails?.owners?.nomineeName ?? ""),
                               getText("Nominee Relation: ",
-                                  unitDetails?.owners.nomineeRelation ?? ""),
+                                  unitDetails?.owners?.nomineeRelation ?? ""),
                               getText("Nominee CNIC: ",
-                                  unitDetails?.owners.nomineeCnicNicop ?? ""),
+                                  unitDetails?.owners?.nomineeCnicNicop ?? ""),
                               getText("Nominee Address: ",
-                                  unitDetails?.owners.nomineeAddress ?? ""),
+                                  unitDetails?.owners?.nomineeAddress ?? ""),
                             ],
                           ),
                         ),
@@ -124,40 +129,163 @@ class _MyPropertiesState extends State<MyProperties> {
                           child: Column(
                             children: [
                               getText(
-                                  "Plot Size: ", unitDetails?.unit.size ?? ""),
+                                  "Plot Size: ", unitDetails?.unit?.size ?? ""),
                               const Divider(),
                               getText("Project: ",
-                                  unitDetails?.unit.project ?? "SA Garden"),
+                                  unitDetails?.unit?.project ?? "SA Garden"),
                               const Divider(),
-                              getText("Type: ", unitDetails?.unit.type ?? ""),
+                              getText("Type: ", unitDetails?.unit?.type ?? ""),
                               const Divider(),
-                              getText("Block: ", unitDetails?.unit.block ?? ""),
+                              getText("Block: ", unitDetails?.unit?.block ?? ""),
                               const Divider(),
                               getText(
                                   "Payment Amount: ",
-                                  unitDetails?.balance.paymentAmount
+                                  unitDetails?.balance?.paymentAmount
                                           .toString() ??
                                       ""),
                               const Divider(),
                               getText(
                                   "Total Amount: ",
-                                  unitDetails?.balance.totalAmount.toString() ??
+                                  unitDetails?.balance?.totalAmount.toString() ??
                                       ""),
                               const Divider(),
                               getText(
                                   "Received Amount: ",
-                                  unitDetails?.balance.receivedAmount
+                                  unitDetails?.balance?.receivedAmount
                                           .toString() ??
                                       ""),
                               const Divider(),
                               getText(
                                   "OutSatnding Amount: ",
-                                  unitDetails?.balance.outstandingAmount
+                                  unitDetails?.balance?.outstandingAmount
                                           .toString() ??
                                       ""),
                             ],
                           ),
                         ),
+                        Row(
+                          children: [
+                            getButton("Payment Plan", (isPayment) ? Colors.red : Colors.grey, () {
+                              isPayment = true;
+                              setState(() {});
+                            }),
+                            getSpace(w: 20),
+                            getButton("Reciepts", (!isPayment) ? Colors.red : Colors.grey, () {
+                              isPayment = false;
+                              false;
+                              setState(() {});
+                            }),
+                          ],
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: (isPayment && getUnitPro.unitDetails!.installments != null) ? DataTable(
+                            columns: const <DataColumn>[
+                              DataColumn(
+                                label: CustomText(
+                                  text: "No",
+                                  bold: FontWeight.w700,
+                                ),
+                              ),
+                              DataColumn(
+                                label: CustomText(
+                                  text: "Installment",
+                                  bold: FontWeight.w700,
+                                ),
+                              ),
+                              DataColumn(
+                                label: CustomText(
+                                  text: "Amount",
+                                  bold: FontWeight.w700,
+                                ),
+                              ),
+                              DataColumn(
+                                label: CustomText(
+                                  text: "Date",
+                                  bold: FontWeight.w700,
+                                ),
+                              ),
+                              DataColumn(
+                                label: CustomText(
+                                  text: "Status",
+                                  bold: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                            rows: <DataRow>[
+                              DataRow(cells: <DataCell>[
+                                for (int i = 0;
+                                    i <
+                                        getUnitPro.unitDetails!.installments!.length;
+                                    i++) ...[
+                                  DataCell(Text(i.toString())),
+                                  DataCell(Text(getUnitPro.unitDetails!
+                                      .installments![i].installmentName
+                                      .toString())),
+                                  DataCell(Text(getUnitPro
+                                      .unitDetails!.installments![i].amount
+                                      .toString())),
+                                  DataCell(Text(getUnitPro
+                                      .unitDetails!.installments![i].dueDate
+                                      .toString())),
+                                  DataCell(Text(getUnitPro
+                                      .unitDetails!.installments![i].status
+                                      .toString())),
+                                ]
+                              ])
+                            ],
+                          ) : (getUnitPro.unitDetails!.receipts != null) ? DataTable(
+                            columns: const <DataColumn>[
+                              DataColumn(
+                                label: CustomText(
+                                  text: "ReceiptNo",
+                                  bold: FontWeight.w700,
+                                ),
+                              ),
+                              DataColumn(
+                                label: CustomText(
+                                  text: "Method",
+                                  bold: FontWeight.w700,
+                                ),
+                              ),
+                              DataColumn(
+                                label: CustomText(
+                                  text: "Amount",
+                                  bold: FontWeight.w700,
+                                ),
+                              ),
+                              DataColumn(
+                                label: CustomText(
+                                  text: "Date",
+                                  bold: FontWeight.w700,
+                                ),
+                              ),
+                              DataColumn(
+                                label: CustomText(
+                                  text: "Status",
+                                  bold: FontWeight.w700,
+                                ),
+                              ),
+                              DataColumn(
+                                label: CustomText(
+                                  text: "Type",
+                                  bold: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                            rows: getUnitPro.unitDetails!.receipts!.map((receipt) {
+                              return DataRow(cells: <DataCell>[
+                                DataCell(Text(receipt.receiptNo.toString())),
+                                DataCell(Text(receipt.paymentType.toString())),
+                                DataCell(Text(receipt.amount.toString())),
+                                DataCell(Text(receipt.dateTime.toString())),
+                                DataCell(Text(receipt.status.toString())),
+                                DataCell(Text(receipt.type.toString())),
+                              ]);
+                            }).toList(),
+                          ) : const SizedBox(),
+
+                        )
                       ],
                     ),
         ),
@@ -175,6 +303,24 @@ class _MyPropertiesState extends State<MyProperties> {
         getSpace(w: 8),
         Expanded(child: CustomText(text: txt2, maxLines: 1)),
       ],
+    );
+  }
+
+  Widget getButton(String txt, Color col, Function() onTap) {
+    return SizedBox(
+      height: 40,
+      child: ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(col),
+        ),
+        onPressed: () {
+          onTap();
+        },
+        child: Text(
+          txt,
+          style: const TextStyle(color: Colors.white),
+        ),
+      ),
     );
   }
 }

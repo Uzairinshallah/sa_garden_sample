@@ -10,6 +10,8 @@ import '../views/homepage/homepage.dart';
 class AuthProvider extends ChangeNotifier {
   ApiService apiService = ApiService();
   UserModel? userModel;
+  bool loginLoading = true;
+
   void login(BuildContext context, String email, String password) async {
 
     try{
@@ -18,7 +20,7 @@ class AuthProvider extends ChangeNotifier {
         "password": password,
       };
       var url = "login1";
-      var response = await apiService.post(body: body, url: url);
+      var response = await apiService.post(body: body, url: url, context: context);
       if(response?.statusCode == 200){
 
         var jsonResponse = json.decode(response!.body);
@@ -31,12 +33,17 @@ class AuthProvider extends ChangeNotifier {
         userModel = user.first;
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', userModel!.token);
+        await prefs.setString('cnic', userModel!.cnic);
+        await prefs.setString('phone', userModel!.phone);
+        await prefs.setString('id', userModel!.id.toString());
 
 
         Navigator.push(context, MaterialPageRoute(builder: (context) => Homepage(),),);
       }else{
         print("Something went wrong");
       }
+      loginLoading = false;
+      notifyListeners();
     }
     catch(e){
       debugPrint('Error: $e');

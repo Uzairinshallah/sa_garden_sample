@@ -1,13 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../views/auth_screens/login_screen.dart';
 
 class ApiService {
   static const String _apiUrl = "http://43.251.252.207:8000/customerportal/";
 
-  Future<http.Response?> post({required String url, required Map body}) async {
+  Future<http.Response?> post({required String url, required Map body, required BuildContext context}) async {
     http.Response responseJson;
 
     try {
@@ -17,14 +20,24 @@ class ApiService {
       });
       debugPrint("request body : ${body.toString()}");
       print("responseJson.statusCode : ${responseJson.statusCode}");
-      print(responseJson.statusCode);
-      debugPrint(responseJson.body.toString());
-      debugPrint(responseJson.statusCode.toString());
+      print("3 ${responseJson.statusCode}");
+      debugPrint("2 ${responseJson.body.toString()}");
+      debugPrint("1 ${responseJson.statusCode.toString()}");
       if (responseJson.statusCode != 200) {
         throw Exception("Something went wrong");
       }
     } on SocketException {
       throw const SocketException('No Internet Connection');
+    }
+    if(jsonDecode(responseJson.body) == false){
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', "");
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LoginScreen(),
+            ),
+                (route) => false);
     }
     return responseJson;
   }

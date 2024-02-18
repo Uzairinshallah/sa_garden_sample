@@ -10,9 +10,9 @@ class UserModel {
   final String token;
   final String expiryDate;
   final int? fileId;
-  final int? fileFormNo;
-  final int plotId;
-  final String plotNumber;
+  final String? fileFormNo;
+  final int? plotId;
+  final String? plotNumber;
 
   UserModel({
     required this.id,
@@ -27,8 +27,8 @@ class UserModel {
     required this.expiryDate,
     required this.fileId,
     required this.fileFormNo,
-    required this.plotId,
-    required this.plotNumber,
+    this.plotId,
+    this.plotNumber,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {

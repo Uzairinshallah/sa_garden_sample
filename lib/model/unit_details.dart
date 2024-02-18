@@ -9,38 +9,38 @@ UnitDetails unitDetailsFromJson(String str) => UnitDetails.fromJson(json.decode(
 String unitDetailsToJson(UnitDetails data) => json.encode(data.toJson());
 
 class UnitDetails {
-  Unit unit;
-  Owners owners;
-  List<Installment> installments;
-  List<Receipt> receipts;
-  List<dynamic> discounts;
-  Balance balance;
+  Unit? unit;
+  Owners? owners;
+  List<Installment>? installments;
+  List<Receipt>? receipts;
+  List<dynamic>? discounts;
+  Balance? balance;
 
   UnitDetails({
-    required this.unit,
-    required this.owners,
-    required this.installments,
-    required this.receipts,
-    required this.discounts,
-    required this.balance,
+     this.unit,
+     this.owners,
+     this.installments,
+     this.receipts,
+     this.discounts,
+     this.balance,
   });
 
   factory UnitDetails.fromJson(Map<String, dynamic> json) => UnitDetails(
-    unit: Unit.fromJson(json["Unit"]),
-    owners: Owners.fromJson(json["Owners"]),
-    installments: List<Installment>.from(json["Installments"].map((x) => Installment.fromJson(x))),
-    receipts: List<Receipt>.from(json["Receipts"].map((x) => Receipt.fromJson(x))),
+    unit: (json["Unit"] != null) ? Unit.fromJson(json["Unit"]) : null,
+    owners: (json["Owners"] != null) ? Owners.fromJson(json["Owners"]) : null,
+    installments: (json["Installments"] != null) ? List<Installment>.from(json["Installments"].map((x) => Installment.fromJson(x))) : [],
+    receipts: (json["Receipts"] != null) ?  List<Receipt>.from(json["Receipts"].map((x) => Receipt.fromJson(x))) : [],
     discounts: [],
-    balance: Balance.fromJson(json["Balance"]),
+    balance: (json["Balance"]!= null) ? Balance.fromJson(json["Balance"]) : null,
   );
 
   Map<String, dynamic> toJson() => {
-    "Unit": unit.toJson(),
-    "Owners": owners.toJson(),
-    "Installments": List<dynamic>.from(installments.map((x) => x.toJson())),
-    "Receipts": List<dynamic>.from(receipts.map((x) => x.toJson())),
-    "Discounts": List<dynamic>.from(discounts.map((x) => x)),
-    "Balance": balance.toJson(),
+    "Unit": unit?.toJson(),
+    "Owners": owners?.toJson(),
+    "Installments": List<dynamic>.from(installments!.map((x) => x.toJson())),
+    "Receipts": List<dynamic>.from(receipts!.map((x) => x.toJson())),
+    "Discounts": List<dynamic>.from(discounts!.map((x) => x)),
+    "Balance": balance?.toJson(),
   };
 }
 
@@ -137,7 +137,7 @@ class Installment {
   String installmentType;
   int amount;
   DateTime dueDate;
-  Status? status;
+  String? status;
 
   Installment({
     required this.installmentName,
@@ -152,7 +152,7 @@ class Installment {
     installmentType: json["Installment_Type"],
     amount: json["Amount"],
     dueDate: DateTime.parse(json["Due_Date"]),
-    status: statusValues.map[json["Status"]],
+    status: json["Status"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -160,98 +160,92 @@ class Installment {
     "Installment_Type": installmentType,
     "Amount": amount,
     "Due_Date": dueDate.toIso8601String(),
-    "Status": statusValues.reverse[status],
+    "Status": status,
   };
 }
 
-enum Status {
-  PAID
-}
 
-final statusValues = EnumValues({
-  "Paid": Status.PAID
-});
 
 class Owners {
-  Name? name;
-  Father? fatherHusband;
-  String postalAddress;
-  String residentialAddress;
-  String phoneOffice;
-  String residential;
-  Mobile1? mobile1;
-  Mobile1? mobile2;
-  String email;
-  String occupation;
-  String nationality;
-  String dateOfBirth;
-  String cnicNicop;
-  String nomineeName;
-  String nomineeRelation;
-  String nomineeAddress;
-  String nomineeCnicNicop;
-  String city;
-  DateTime dateTime;
-  String ownershipStatus;
-  int groupTag;
+  String? name;
+  String? fatherHusband;
+  String? postalAddress;
+  String? residentialAddress;
+  String? phoneOffice;
+  String? residential;
+  String? mobile1;
+  String? mobile2;
+  String? email;
+  String? occupation;
+  String? nationality;
+  String? dateOfBirth;
+  String? cnicNicop;
+  String? nomineeName;
+  String? nomineeRelation;
+  String? nomineeAddress;
+  String? nomineeCnicNicop;
+  String? city;
+  DateTime? dateTime;
+  String? ownershipStatus;
+  int? groupTag;
 
   Owners({
-    required this.name,
-    required this.fatherHusband,
-    required this.postalAddress,
-    required this.residentialAddress,
-    required this.phoneOffice,
-    required this.residential,
-    required this.mobile1,
-    required this.mobile2,
-    required this.email,
-    required this.occupation,
-    required this.nationality,
-    required this.dateOfBirth,
-    required this.cnicNicop,
-    required this.nomineeName,
-    required this.nomineeRelation,
-    required this.nomineeAddress,
-    required this.nomineeCnicNicop,
-    required this.city,
-    required this.dateTime,
-    required this.ownershipStatus,
-    required this.groupTag,
+    this.name,
+    this.fatherHusband,
+    this.postalAddress,
+    this.residentialAddress,
+    this.phoneOffice,
+    this.residential,
+    this.mobile1,
+    this.mobile2,
+    this.email,
+    this.occupation,
+    this.nationality,
+    this.dateOfBirth,
+    this.cnicNicop,
+    this.nomineeName,
+    this.nomineeRelation,
+    this.nomineeAddress,
+    this.nomineeCnicNicop,
+    this.city,
+    this.dateTime,
+    this.ownershipStatus,
+    this.groupTag,
   });
 
   factory Owners.fromJson(Map<String, dynamic> json) => Owners(
-    name: nameValues.map[json["Name"]],
-    fatherHusband: fatherValues.map[json["Father_Husband"]],
-    postalAddress: json["Postal_Address"],
-    residentialAddress: json["Residential_Address"],
-    phoneOffice: json["Phone_Office"],
-    residential: json["Residential"],
-    mobile1: mobile1Values.map[json["Mobile_1"]],
-    mobile2: mobile1Values.map[json["Mobile_2"]],
-    email: json["Email"],
-    occupation: json["Occupation"],
-    nationality: json["Nationality"],
-    dateOfBirth: json["Date_Of_Birth"],
-    cnicNicop: json["CNIC_NICOP"],
-    nomineeName: json["Nominee_Name"],
-    nomineeRelation: json["Nominee_Relation"],
-    nomineeAddress: json["Nominee_Address"],
-    nomineeCnicNicop: json["Nominee_CNIC_NICOP"],
-    city: json["City"],
-    dateTime: DateTime.parse(json["DateTime"]),
-    ownershipStatus: json["Ownership_Status"],
-    groupTag: json["Group_Tag"],
+    name: json["Name"] ?? "",
+    fatherHusband: json["Father_Husband"] ?? "",
+    postalAddress: json["Postal_Address"] ?? "",
+    residentialAddress: json["Residential_Address"]?? "",
+    phoneOffice: json["Phone_Office"]?? "",
+    residential: json["Residential"]?? "",
+    mobile1: json["Mobile_1"]?? "",
+    mobile2: json["Mobile_2"]?? "",
+    email: json["Email"]?? "",
+    occupation: json["Occupation"]?? "",
+    nationality: json["Nationality"]?? "",
+    dateOfBirth: json["Date_Of_Birth"]?? "",
+    cnicNicop: json["CNIC_NICOP"]?? "",
+    nomineeName: json["Nominee_Name"]?? "",
+    nomineeRelation: json["Nominee_Relation"]?? "",
+    nomineeAddress: json["Nominee_Address"]?? "",
+    nomineeCnicNicop: json["Nominee_CNIC_NICOP"]?? "",
+    city: json["City"]?? "",
+    dateTime: (json["DateTime"] != null) ? DateTime.parse(json["DateTime"]) :  DateTime.now(),
+    ownershipStatus: json["Ownership_Status"]?? "",
+    groupTag: json["Group_Tag"]?? 0,
   );
 
   Map<String, dynamic> toJson() => {
-    "Name": nameValues.reverse[name],
-    "Father_Husband": fatherValues.reverse[fatherHusband],
+    "Name": name,
+    "Father_Husband": fatherHusband,
     "Postal_Address": postalAddress,
     "Residential_Address": residentialAddress,
     "Phone_Office": phoneOffice,
     "Residential": residential,
-    "Mobile_1": mobile1Values.reverse[mobile1],
-    "Mobile_2": mobile1Values.reverse[mobile2],
+    "Mobile_1": mobile1,
+    "Mobile_2": mobile2,
     "Email": email,
     "Occupation": occupation,
     "Nationality": nationality,
@@ -262,53 +256,53 @@ class Owners {
     "Nominee_Address": nomineeAddress,
     "Nominee_CNIC_NICOP": nomineeCnicNicop,
     "City": city,
-    "DateTime": dateTime.toIso8601String(),
+    "DateTime": dateTime?.toIso8601String(),
     "Ownership_Status": ownershipStatus,
     "Group_Tag": groupTag,
   };
 }
+//
+// enum Father {
+//   SHEIKH_KAUSAR_AMIN
+// }
 
-enum Father {
-  SHEIKH_KAUSAR_AMIN
-}
-
-final fatherValues = EnumValues({
-  "Sheikh Kausar Amin": Father.SHEIKH_KAUSAR_AMIN
-});
-
-enum Mobile1 {
-  MOBILE_103454181876,
-  THE_03454181876
-}
-
-final mobile1Values = EnumValues({
-  "0345-4181876": Mobile1.MOBILE_103454181876,
-  "03454181876": Mobile1.THE_03454181876
-});
-
-enum Name {
-  SARMAD_AMIN
-}
-
-final nameValues = EnumValues({
-  "Sarmad Amin": Name.SARMAD_AMIN
-});
+// final fatherValues = EnumValues({
+//   "Sheikh Kausar Amin": Father.SHEIKH_KAUSAR_AMIN
+// });
+//
+// enum Mobile1 {
+//   MOBILE_103454181876,
+//   THE_03454181876
+// }
+//
+// final mobile1Values = EnumValues({
+//   "0345-4181876": Mobile1.MOBILE_103454181876,
+//   "03454181876": Mobile1.THE_03454181876
+// });
+//
+// enum Name {
+//   SARMAD_AMIN
+// }
+//
+// final nameValues = EnumValues({
+//   "Sarmad Amin": Name.SARMAD_AMIN
+// });
 
 class Receipt {
   int id;
-  Name? name;
-  Father? fatherName;
-  Mobile1? contact;
+  String? name;
+  String? fatherName;
+  String? contact;
   int tokenParameter;
   int amount;
-  Bank? bank;
+  String? bank;
   dynamic chPayDraftDate;
   String? chPayDraftNo;
   DateTime dateTime;
-  PaymentType? paymentType;
+  String? paymentType;
   String receiptNo;
-  bool verified;
-  Type? type;
+  bool? verified;
+  String? type;
   dynamic cancel;
   dynamic status;
   dynamic dispute;
@@ -337,19 +331,19 @@ class Receipt {
 
   factory Receipt.fromJson(Map<String, dynamic> json) => Receipt(
     id: json["Id"],
-    name: nameValues.map[json["Name"]],
-    fatherName: fatherValues.map[json["Father_Name"]],
-    contact: mobile1Values.map[json["Contact"]],
+    name: json["Name"],
+    fatherName: json["Father_Name"],
+    contact: json["Contact"],
     tokenParameter: json["TokenParameter"],
     amount: json["Amount"],
-    bank: bankValues.map[json["Bank"]],
+    bank: json["Bank"],
     chPayDraftDate: json["Ch_Pay_Draft_Date"],
     chPayDraftNo: json["Ch_Pay_Draft_No"],
-    dateTime: DateTime.parse(json["DateTime"]),
-    paymentType: paymentTypeValues.map[json["PaymentType"]],
+    dateTime:  DateTime.parse(json["DateTime"]),
+    paymentType: json["PaymentType"],
     receiptNo: json["ReceiptNo"],
     verified: json["Verified"],
-    type: typeValues.map[json["Type"]],
+    type: json["Type"],
     cancel: json["Cancel"],
     status: json["Status"],
     dispute: json["Dispute"],
@@ -358,19 +352,19 @@ class Receipt {
 
   Map<String, dynamic> toJson() => {
     "Id": id,
-    "Name": nameValues.reverse[name],
-    "Father_Name": fatherValues.reverse[fatherName],
-    "Contact": mobile1Values.reverse[contact],
+    "Name": name,
+    "Father_Name": fatherName,
+    "Contact": contact,
     "TokenParameter": tokenParameter,
     "Amount": amount,
-    "Bank": bankValues.reverse[bank],
+    "Bank": bank,
     "Ch_Pay_Draft_Date": chPayDraftDate,
     "Ch_Pay_Draft_No": chPayDraftNo,
     "DateTime": dateTime.toIso8601String(),
-    "PaymentType": paymentTypeValues.reverse[paymentType],
+    "PaymentType": paymentType,
     "ReceiptNo": receiptNo,
     "Verified": verified,
-    "Type": typeValues.reverse[type],
+    "Type": type,
     "Cancel": cancel,
     "Status": status,
     "Dispute": dispute,
@@ -378,37 +372,37 @@ class Receipt {
   };
 }
 
-enum Bank {
-  DUBAI_ISLAMIC_BANK,
-  HABIB_BANK
-}
-
-final bankValues = EnumValues({
-  "Dubai Islamic Bank": Bank.DUBAI_ISLAMIC_BANK,
-  "Habib Bank": Bank.HABIB_BANK
-});
-
-enum PaymentType {
-  CASH,
-  ONLINE_CASH
-}
-
-final paymentTypeValues = EnumValues({
-  "Cash": PaymentType.CASH,
-  "Online_Cash": PaymentType.ONLINE_CASH
-});
-
-enum Type {
-  BOOKING,
-  INSTALLMENT,
-  TRANSFER
-}
-
-final typeValues = EnumValues({
-  "Booking": Type.BOOKING,
-  "Installment": Type.INSTALLMENT,
-  "Transfer": Type.TRANSFER
-});
+// enum Bank {
+//   DUBAI_ISLAMIC_BANK,
+//   HABIB_BANK
+// }
+//
+// final bankValues = EnumValues({
+//   "Dubai Islamic Bank": Bank.DUBAI_ISLAMIC_BANK,
+//   "Habib Bank": Bank.HABIB_BANK
+// });
+//
+// enum PaymentType {
+//   CASH,
+//   ONLINE_CASH
+// }
+//
+// final paymentTypeValues = EnumValues({
+//   "Cash": PaymentType.CASH,
+//   "Online_Cash": PaymentType.ONLINE_CASH
+// });
+//
+// enum Type {
+//   BOOKING,
+//   INSTALLMENT,
+//   TRANSFER
+// }
+//
+// final typeValues = EnumValues({
+//   "Booking": Type.BOOKING,
+//   "Installment": Type.INSTALLMENT,
+//   "Transfer": Type.TRANSFER
+// });
 
 class Unit {
   int unitId;
